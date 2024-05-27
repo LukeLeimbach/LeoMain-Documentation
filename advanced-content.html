@@ -1,0 +1,269 @@
+<!-- Custom Audio Waveform Component -->
+<div class="audio-container">
+  <h1 class="audio-h1">Room Acoustics Transformed</h1>
+  <div class="playerConatiner">
+      <img id="playBtn" src="https://cdn.shopify.com/s/files/1/0564/8610/1056/files/play_cropped.png?v=1705999750" alt="Toggle Play">
+      <div id="waveform"></div>
+  </div>
+
+
+  <div class="toggleContainer">
+      <p class="wo" id="without"> Without TriVeneer</p>
+      <div id="toggle-btn"><i class="fas fa-toggle-on"></i></div>
+      <p class="wo" id="with">With TriVeneer</p>
+  </div>
+</div>
+
+
+<!-- Custom Image Slider -->
+<div class="drag-body">
+  <div id="wrapper">
+      <div id="imageLeft" class="overlay-image">
+          <img class="default-image-style" src="https://cdn.shopify.com/s/files/1/0564/8610/1056/files/leftimg1_3b721899-5e64-4a39-b55f-1a73de92e2b3.png?v=1706187521" alt="Image 1">
+      </div>
+      <div id="imageRight" class="overlay-image">
+          <img class="default-image-style" src="https://cdn.shopify.com/s/files/1/0564/8610/1056/files/rightimg1_e674016d-521c-459e-b672-566d5f53971b.jpg?v=1706187521" alt="Image 2">
+      </div>
+      <div id="slider" class="slider">
+          <div id="dragLabel">DRAG</div>
+      </div>
+  </div> 
+</div>
+
+
+<!-- Custom Box Calculator -->
+<div class="box-container">
+  <div class="titleContainer">
+      <h1 class="title">Box Calculator</h1>
+      <h3 class="title">Enter your wall dimensions</h3>
+  </div>
+
+  <div class="inputContainer">
+      <div class="inputSubContainer">
+          <label class="box-label" for="Quantity-user_input_width">Width (in)</label>
+          <div class="js-qty__wrapper" style="display: inline-block;">
+            <input type="text" id="input_width" class="js-qty__num" value="22" min="1" aria-label="quantity" name="quantity" style="width: 100px;">
+            </div>
+      </div>
+
+      <div class="inputSubContainer">
+          <label class="box-label" for="Quantity-user_input_height">Height (in)</label>
+          <div class="js-qty__wrapper" style="display: inline-block;">
+              <input type="text" id="input_height" class="js-qty__num" value="94.5" min="1" aria-label="quantity" name="quantity" style="width: 100px;">
+            </div>
+      </div>
+  </div>
+
+  <div class="checkoutContainer">
+      <button class="btn button" id="addToCartBtn">You need 1 box for $249.00</button>
+  </div>
+  <div id="result"></div>
+</div>
+
+
+<!-- LeoMain Custom Content - To be added in the 'advanced-content.liquid' file -->
+<!-- BOX CALCULATOR -->
+<!-- JS -->
+<script>
+  function attachEventListeners() {
+      // Function to calculate and update quantity
+      function updateQuantity() {
+          const _w = document.getElementById('input_width').value;
+          const _h = document.getElementById('input_height').value;
+
+          if (isNaN(_w) || _w < 0) {
+              document.getElementById('input_width').value = 0;
+          }
+        
+          if (isNaN(_h) || _h < 0) {
+              document.getElementById('input_height').value = 0;
+          }
+  
+          const width = parseInt(_w, 10);
+          const height = parseInt(_h, 10);
+  
+          if (width < 1) {
+              document.getElementById('input_width').value = 0;
+          }
+  
+          if (height < 1) {
+              document.getElementById('input_height').value = 0;
+          }
+  
+          const panel_width = 22;
+          const panel_height = 94.5;
+  
+          var wallArea = height * width;
+          var panelArea = panel_height * panel_width;
+      
+          var numberOfPanels = Math.ceil(wallArea / panelArea);
+  
+          // Update the quantity field
+          const quantityField = document.getElementById('addToCartBtn');
+          if (quantityField && width && height) {
+              if (numberOfPanels > 1){
+                  quantityField.innerText = "You need " + String(numberOfPanels) + " boxes for $" + parseFloat(249.00 * parseFloat(numberOfPanels));
+              } else {
+                  quantityField.innerText = "You need " + String(numberOfPanels) + " box for $249.00";
+              }
+          } else {
+              quantityField.innerText = "You need 1 box for $249.00";
+          }
+      }
+  
+      var input_width = document.getElementById('input_width');
+      var input_height = document.getElementById('input_height');
+  
+      if (input_width && input_height) {
+          input_width.addEventListener('input', updateQuantity);
+          input_height.addEventListener('input', updateQuantity);
+          console.log("Event listeners attached");
+      } else {
+          console.log('Elements not found');
+      }
+  }
+  
+  document.addEventListener('DOMContentLoaded', attachEventListeners);
+  document.addEventListener('shopify:section:loaded', attachEventListeners);
+</script>
+
+
+
+<!-- AUDIO VISUALIZATION -->
+<!-- IMPORTS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<script defer src="https://unpkg.com/wavesurfer.js"></script>
+
+<!-- JS -->
+<script>
+  let wavesurfer;  // This will hold the WaveSurfer instance
+  
+  // Function to initialize WaveSurfer
+  function initializeWaveSurfer() {
+      if (wavesurfer) {
+          // If wavesurfer instance exists, destroy it before creating a new one
+          wavesurfer.destroy();
+      }
+
+      // Change these if you get new audio
+      const best_track = 'https://cdn.shopify.com/s/files/1/0564/8610/1056/files/best.mp3?v=1705999751';
+      const bad_track = 'https://cdn.shopify.com/s/files/1/0564/8610/1056/files/bad.mp3?v=1705999750';
+  
+      // Create a new WaveSurfer instance
+      wavesurfer = WaveSurfer.create({
+          container: '#waveform',
+          waveColor: '#808080',
+          progressColor: 'black',
+          url: best_track,
+          barWidth: 4,
+          responsive: true,
+          barRadius: 4,
+          height: 90
+      });
+  
+      // Load the initial track
+      wavesurfer.load(best_track);
+  
+      // Setup play/pause button functionality
+      var playBtn = document.getElementById('playBtn');
+      playBtn.onclick = function () {
+          wavesurfer.playPause();
+          if (playBtn.src.includes('https://cdn.shopify.com/s/files/1/0564/8610/1056/files/pause_cropped.png?v=1705999751')) {
+              playBtn.src = 'https://cdn.shopify.com/s/files/1/0564/8610/1056/files/play_cropped.png?v=1705999750';
+              playBtn.style.width = '60px';
+              playBtn.style.height = '60px';
+          } else {
+              playBtn.src = 'https://cdn.shopify.com/s/files/1/0564/8610/1056/files/pause_cropped.png?v=1705999751';
+              playBtn.style.width = '60px';
+              playBtn.style.height = '60px';
+          }
+      };
+  
+      // Handle when the track finishes playing
+      wavesurfer.on('finish', function () {
+          playBtn.src = 'https://cdn.shopify.com/s/files/1/0564/8610/1056/files/play_cropped.png?v=1705999750';
+          wavesurfer.stop();
+      });
+  
+      // Setup track toggle functionality
+      var currentTrack = best_track;
+      document.getElementById('toggle-btn').addEventListener('click', function () {
+          const currentTime = wavesurfer.getCurrentTime();
+          const isPlaying = wavesurfer.isPlaying();
+  
+          currentTrack = currentTrack === best_track ?
+              bad_track :
+              best_track;
+  
+          wavesurfer.load(currentTrack);
+          document.getElementById('toggle-btn').innerHTML = currentTrack.includes('best') ? 
+              '<i class="fas fa-toggle-on"></i>' : '<i class="fas fa-toggle-off"></i>';
+  
+          wavesurfer.on('ready', function() {
+              wavesurfer.seekTo(currentTime / wavesurfer.getDuration());
+              if (isPlaying) wavesurfer.play();
+          });
+      });
+  }
+  
+  // Initialize WaveSurfer on page load
+  document.addEventListener('DOMContentLoaded', initializeWaveSurfer);
+  
+  // If using AJAX in theme, reinitialize WaveSurfer when the page is dynamically reloaded
+  document.addEventListener('shopify:section:loaded', initializeWaveSurfer);
+</script>
+
+
+
+<!-- SLIDING IMAGE -->
+<!-- IMPORTS -->
+
+<!-- JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var slider = document.getElementById('slider');
+  var imageLeft = document.getElementById('imageLeft');
+  var wrapper = document.getElementById('wrapper');
+
+  var isDragging = false;
+
+  // Function to move the slider and adjust the image
+  var moveSlider = function (e) {
+      if (!isDragging) return;
+      var rect = wrapper.getBoundingClientRect();
+      var posX = e.clientX - rect.left; // Get the horizontal coordinate relative to the wrapper
+      var width = Math.max(0, Math.min(posX, rect.width)); // Clamp the width between 0 and the width of the wrapper
+
+      slider.style.left = width + 'px'; // Move the slider
+      imageLeft.style.width = width + 'px'; // Adjust the width of the left image
+  };
+
+  // Add event listeners for mouse interactions
+  slider.addEventListener('mousedown', function (e) {
+      e.preventDefault(); // Prevent default action to avoid any unwanted behavior
+      isDragging = true;
+      moveSlider(e);
+  });
+
+  document.addEventListener('mousemove', moveSlider);
+
+  document.addEventListener('mouseup', function () {
+      isDragging = false;
+  });
+
+  // Optional: Add touch event listeners for mobile devices
+  slider.addEventListener('touchstart', function (e) {
+      e.preventDefault(); // Prevent default action on touch
+      isDragging = true;
+      moveSlider(e.touches[0]);
+  });
+
+  document.addEventListener('touchmove', function (e) {
+      moveSlider(e.touches[0]);
+  });
+
+  document.addEventListener('touchend', function () {
+      isDragging = false;
+  });
+});
+</script>

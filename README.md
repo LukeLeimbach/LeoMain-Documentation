@@ -8,17 +8,19 @@ Custom features on the home page:
 - Audio Comparison
 
 Custom features on the main product page:
-- Quantity / Price calculator
+- Quantity / Price calculator *(which I assume to be depricated in the new theme)*
 
-The HTML/CSS for these features is in the Shopify frontend editor as custom components. Change these by going into Shopify theme editor and click on the component.
+The HTML for these features is in the Shopify frontend editor as custom components. Change these by going into Shopify theme editor and click on the component.
 
-The JavaScript functionality should be put here:
+Everything else regarding the components can be found here:
 - Go to the admin panel
 - Click "Online Store" in the left side navigator
 - Click the three dots next to "Customize"
 - Click "Edit Code"
-- Find "Advanced-Content.liquid" for Box Calculator, Audio Comparison, and Image Slider
-- Find "main-product.liquid" for custom quantity calculator on the main product page
+- Find what you are looking for
+  - Find "Advanced-Content.liquid" for Box Calculator, Audio Comparison, and Image Slider
+  - Find "main-product.liquid" for custom quantity calculator on the main product page
+  - Find "custom-item-functionality.css" for the component css for **all components**. Note, the old theme did not have a "custom css" area.
 - Search the page for "LeoMain Custom Content"
 
 ## Disclaimer

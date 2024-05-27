@@ -1,0 +1,78 @@
+<style>
+  .product__price-display-custom {
+    width: 80px;
+    height: 40px;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .product__price-display-custom p {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+<script>
+    // LeoMain Custom Content
+    function attachEventListeners() {
+        // Function to calculate and update quantity
+        function updateQuantity() {
+            const width = parseInt(document.getElementById('Quantity-user_input_width').value, 10);
+            const height = parseInt(document.getElementById('Quantity-user_input_height').value, 10);
+
+            if (width < 1) {
+                document.getElementById('Quantity-user_input_width').value = 1;
+            }
+
+            if (height < 0) {
+                document.getElementById('Quantity-user_input_height').value = 1;
+            }
+
+            const panel_width = 22;
+            const panel_height = 94.49;
+
+            var wallArea = height * width;
+            var panelArea = panel_height * panel_width;
+
+            var numberOfPanels = Math.ceil(wallArea / panelArea);
+
+            var price = numberOfPanels * 249.00;
+
+            // Update the quantity field
+            const quantityField = document.getElementById('Quantity-' + '{{ section.id }}');
+            if (quantityField && width && height) {
+                quantityField.value = numberOfPanels;
+            }
+
+            // Update price field
+            const priceField = document.getElementById('Price-' + '{{ section.id }}');
+            if (quantityField && width && height) {
+                priceField.innerHTML = `$${price}`;
+            }
+        }
+
+        var widthInput = document.getElementById('Quantity-user_input_width');
+        var heightInput = document.getElementById('Quantity-user_input_height');
+
+        if (widthInput && heightInput) {
+            widthInput.addEventListener('input', updateQuantity);
+            heightInput.addEventListener('input', updateQuantity);
+        } else {
+            console.log('Elements not found');
+        }
+
+        // Add event listener to quantityField
+        const quantityField = document.getElementById('Quantity-' + '{{ section.id }}');
+        if (quantityField) {
+            quantityField.addEventListener('input', updateQuantity);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', attachEventListeners);
+    document.addEventListener('shopify:section:loaded', attachEventListeners);
+
+</script>
